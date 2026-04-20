@@ -1,12 +1,47 @@
-# Projet-Truitteur
-Projet de DevSecOps mené au cours de mon cursus à l'ESIEE Paris en cybersécurité.
+# Projet Truitteur - Infrastructure DevSecOps
 
-Le projet Truitteur est assez simple : Notre patron, très friand des dramas du réseau social à l’oiseau bleu est bien attristé de la déchéance du service. En discutant à la machine à café avec un des développeurs de l’entreprise, lui vient une idée : Truitteur. Nous sommes donc chargés de la sécurisation du développement de Truitteur. Il n'existe aucun serveur pour déployer l’application, aucun pour la compiler… Bref, tout reste à faire ! 
+> **Projet de 4ème année à l'ESIEE Paris en filière Cybersécurité.**
+> --> Mise en place d'une infrastructure complète "Security by Design" pour une application Java/Spring Boot.
 
-Les spécifications techniques nous indiquent qu’il s’agit d’une application développée sur Java, s’appuyant sur le framework Springboot. L’objectif principal n’est pas le développement de l’application elle-même mais la mise en place d’une infrastructure DevSecOps complète, robuste et sécurisée avec une approche de Security by Design. Le défi technique réside du fait que l’on commence le projet à zéro, à partir de deux machines virtuelles vierges sur lesquelles tout reste à faire…
+---
 
-Il s'agit d'un projet mené en groupe de 4 avec d'autres étudiants de ma promo en 4e année à l'ESIEE Paris, en filière cybersécurité.
+## 📑 Présentation du Projet
+Truitteur est un projet visant à déployer et sécuriser une application de réseau social à partir de zéro sur une infrastructure cloud. L'objectif principal était de construire un socle robuste en suivant les principes de **minimisation de la surface d'attaque** et d'**automatisation sécurisée**.
 
-Le rapport détaillé complet est disponible en pdf sous le nom "Projet-Truitteur.pdf".
+### 🏗️ Architecture & Stack Technique
+L'infrastructure repose sur deux environnements distincts hébergés sur **AWS** :
 
-Bonne lecture ;)
+* **Serveur de Compilation (CI/CD) :** Jenkins, SonarQube, Sonatype Nexus.
+* **Serveur de Production :** Nginx (Reverse-Proxy), Java 17 JRE Headless, PostgreSQL 15.
+* **Conteneurisation :** Orchestration via **Podman** en mode Rootless.
+
+---
+
+## 🔒 Sécurisation du Socle (Ops)
+Le projet applique les recommandations de l'**ANSSI** pour le durcissement système :
+
+* **Accès SSH durci :** Désactivation du compte `root` et de l'authentification par mot de passe. Connexion exclusive par clés RSA sur un port personnalisé.
+* **Filtrage Réseau :** Configuration d'un pare-feu **Iptables** extrêmement restrictif (Politique par défaut : DROP). Seuls les flux vitaux (HTTPS, DNS, NTP) sont autorisés.
+* **Reverse-Proxy Nginx :** Terminaison SSL/TLS (v1.2 & v1.3 uniquement), protection contre le clickjacking et injection d'en-têtes de sécurité (HSTS, X-Content-Type-Options).
+
+---
+
+## 🚀 Pipeline CI/CD (DevSecOps)
+La chaîne de livraison automatise la sécurité à chaque étape :
+
+1.  **Build :** Compilation Maven.
+2.  **Analyse Statisique (SAST) :** Scan de vulnérabilités via **SonarQube**. 
+3.  **Gestion d'Artefacts :** Stockage sécurisé dans **Nexus**.
+4.  **Déploiement Continu :** Transfert automatique via SSH/SCP et déploiement dans des conteneurs isolés sur le serveur de production.
+
+---
+
+## 👥 Équipe "Les Asystes"
+* Nicolas WILLIAME
+* Rayan ZABAÏOU
+* Zélia TITON
+* Théo ZHOU
+
+---
+
+📄 *Pour plus de détails techniques, consultez le [Rapport Complet](./Projet-Truitteur.pdf).*
